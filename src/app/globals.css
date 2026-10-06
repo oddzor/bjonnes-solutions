@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  /* Natt: the sky above ground, from the blue-black of the logo's wordmark */
+  --color-natt-950: #050b14;
+  --color-natt-900: #0a1422;
+  --color-natt-800: #101d30;
+  --color-natt-600: #2b3f5e;
+  /* Jord: the soil layers under the surface */
+  --color-jord-900: #17120e;
+  --color-jord-800: #211a14;
+  --color-jord-600: #4a3a2b;
+  --color-jord-300: #b8a996;
+  /* Fjell: bedrock */
+  --color-fjell-950: #0f1216;
+  --color-fjell-900: #15191e;
+  --color-fjell-800: #1f252c;
+  --color-fjell-600: #46515d;
+  /* Stein: light granite, for text and line drawings */
+  --color-stein-50: #f2f3f1;
+  --color-stein-300: #c2c7cb;
+  --color-stein-400: #98a2ae;
+  /* Signal: the yellow of the logo's rock breaker, used for actions */
+  --color-signal-400: #ffd447;
+  --color-signal-500: #f6b900;
+  --color-signal-700: #a37700;
+  /* Stål: the blue of "Solutions" in the logo */
+  --color-stal-500: #5f8fc4;
+  /* Gress: the ground line where the surface meets the sky */
+  --color-gress-500: #7d9a55;
+
+  --font-sans: var(--font-archivo);
+
+  /* Tokens used by shadcn / 21st.dev components */
+  --color-background: var(--color-natt-900);
+  --color-foreground: var(--color-stein-50);
+  --color-card: var(--color-natt-800);
+  --color-card-foreground: var(--color-stein-50);
+  --color-popover: var(--color-natt-800);
+  --color-popover-foreground: var(--color-stein-50);
+  --color-primary: var(--color-signal-500);
+  --color-primary-foreground: var(--color-fjell-950);
+  --color-secondary: var(--color-natt-800);
+  --color-secondary-foreground: var(--color-stein-50);
+  --color-muted: var(--color-natt-800);
+  --color-muted-foreground: var(--color-stein-400);
+  --color-accent: var(--color-natt-800);
+  --color-accent-foreground: var(--color-stein-50);
+  --color-destructive: #e5484d;
+  --color-border: var(--color-natt-600);
+  --color-input: var(--color-natt-600);
+  --color-ring: var(--color-signal-500);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+/* Headings use the widest cut of Archivo, like the wordmark in the logo. */
+@utility display {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Soil: fine grains. */
+@utility grain {
+  background-image: radial-gradient(circle, rgb(255 255 255 / 0.07) 1px, transparent 1.6px);
+  background-size: 15px 15px;
+}
+
+/* Rock: faint bedding planes running at an angle. */
+@utility bedding {
+  background-image: repeating-linear-gradient(
+    112deg,
+    transparent 0 46px,
+    rgb(255 255 255 / 0.04) 46px 47px
+  );
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-natt-950);
+    color: var(--color-stein-50);
+    font-family: var(--font-sans), system-ui, sans-serif;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal-500);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

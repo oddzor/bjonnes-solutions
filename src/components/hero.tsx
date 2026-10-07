@@ -2,18 +2,40 @@
 
 import { ArrowDown, Phone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { site } from "@/lib/site";
 
 const lines = ["Fra tretopp", "til fjellgrunn."];
 
-/** The sky. The headline names the whole span of the work; the ground starts in the next section. */
+/** The sky. The headline names the whole span of the work, over film of it; the ground starts in the next section. */
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const film = useRef<HTMLVideoElement>(null);
   const ease = [0.22, 1, 0.36, 1] as const;
 
+  // With reduced motion the film stands still on its poster.
+  useEffect(() => {
+    if (reduceMotion) film.current?.pause();
+  }, [reduceMotion]);
+
   return (
-    <section className="bg-linear-to-b from-natt-950 to-natt-900">
-      <div className="mx-auto max-w-7xl px-5 pt-14 pb-20 sm:px-8 sm:pt-24 sm:pb-28">
+    <section className="relative isolate flex min-h-[min(calc(100svh-6rem),54rem)] flex-col justify-end overflow-hidden bg-natt-950">
+      <video
+        ref={film}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/video/hero-poster.jpg"
+        aria-hidden
+        className="absolute inset-0 -z-20 size-full object-cover"
+      >
+        <source src="/video/hero.mp4" type="video/mp4" />
+      </video>
+      {/* Night falls over the film from the top and the bottom, so the text stays readable. */}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-b from-natt-950/80 via-natt-950/45 to-natt-950/90" />
+      <div className="mx-auto w-full max-w-7xl px-5 pt-24 pb-16 sm:px-8 sm:pb-24">
         <h1 className="display text-[clamp(1.9rem,8.2vw,6.75rem)] leading-[0.98]">
           {/* Each line rises out from behind its own baseline, once, on load. */}
           {lines.map((line, i) => (
@@ -33,9 +55,9 @@ export function Hero() {
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12"
+          className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12"
         >
-          <p className="max-w-xl text-xl leading-relaxed text-stein-300 lg:col-span-6 lg:col-start-7 lg:row-start-1">
+          <p className="max-w-xl text-xl leading-relaxed text-stein-50 lg:col-span-6 lg:col-start-7 lg:row-start-1">
             {site.name} feller trærne, graver tomta og sprenger fjellet under.
             Én entreprenør på {site.city} for hele jobben, over og under bakken.
           </p>

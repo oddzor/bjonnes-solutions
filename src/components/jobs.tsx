@@ -7,9 +7,11 @@ export function Jobs() {
 
   return (
     <section className="bg-fjell-900 py-24 sm:py-32">
-      <h2 className="sr-only">Fra jobbene</h2>
-      <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-12">
-        <figure className="lg:col-span-5 lg:self-end">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <h2 className="display text-[2rem] leading-[1.02] text-balance sm:text-5xl">Siste fra {site.name}</h2>
+      </div>
+      <div className="mx-auto mt-14 grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-12">
+        <figure className="lg:col-span-5 lg:self-center">
           <blockquote className="display text-2xl leading-[1.18] text-balance sm:text-[2rem]">
             «{quote}»
           </blockquote>

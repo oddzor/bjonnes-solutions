@@ -28,8 +28,12 @@
   --color-signal-700: #a37700;
   /* Stål: the blue of "Solutions" in the logo */
   --color-stal-500: #5f8fc4;
-  /* Gress: the ground line where the surface meets the sky */
+  /* Gress: the surface, above ground. 500 is the ground line where it meets the sky */
+  --color-gress-900: #0f1d13;
+  --color-gress-800: #16291b;
+  --color-gress-600: #35523a;
   --color-gress-500: #7d9a55;
+  --color-gress-300: #adc0a6;
 
   --font-sans: var(--font-archivo);
 
@@ -79,6 +83,34 @@
     transparent 0 46px,
     rgb(255 255 255 / 0.04) 46px 47px
   );
+}
+
+/* Hairline figures: the plate takes the colour of the layer it stands in, and signal yellow is the one highlight. */
+@utility hairline-gress {
+  --hairline-plate: var(--color-gress-900);
+  --hairline-hi: var(--color-signal-500);
+  --hairline-edge: var(--color-gress-300);
+  --hairline-mid: #6c8468;
+  --hairline-lo: var(--color-gress-600);
+  --hairline-stroke: 1.25;
+}
+
+@utility hairline-jord {
+  --hairline-plate: var(--color-jord-800);
+  --hairline-hi: var(--color-signal-500);
+  --hairline-edge: var(--color-jord-300);
+  --hairline-mid: #7d6f60;
+  --hairline-lo: var(--color-jord-600);
+  --hairline-stroke: 1.25;
+}
+
+@utility hairline-fjell {
+  --hairline-plate: var(--color-fjell-800);
+  --hairline-hi: var(--color-signal-500);
+  --hairline-edge: var(--color-stein-400);
+  --hairline-mid: #6b7682;
+  --hairline-lo: var(--color-fjell-600);
+  --hairline-stroke: 1.25;
 }
 
 @layer base {

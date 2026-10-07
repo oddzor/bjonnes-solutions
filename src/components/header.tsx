@@ -3,6 +3,7 @@
 import { Phone } from "lucide-react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useState } from "react";
+import { Logo } from "@/components/logo";
 import { site } from "@/lib/site";
 
 const links = [
@@ -17,17 +18,8 @@ export function Header() {
   return (
     <header className="bg-natt-950">
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
-        {/* Typeset like the wordmark in the logo: wide capitals over a spaced second line. */}
-        <a href="#" aria-label={site.name} className="leading-none">
-          <span aria-hidden className="display block text-2xl uppercase">
-            Bjønnes
-          </span>
-          <span
-            aria-hidden
-            className="mt-1 block text-xs font-semibold tracking-[0.42em] text-stal-500 uppercase"
-          >
-            Solutions
-          </span>
+        <a href="#" aria-label={site.name} className="text-stein-50">
+          <Logo accent="var(--color-stal-500)" className="h-11 w-auto" />
         </a>
         <nav aria-label="Hovedmeny" className="hidden items-center gap-9 md:flex">
           {links.map((link) => (

@@ -1,45 +1,113 @@
-import Image from "next/image";
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { ContactForm } from "@/components/contact-form";
 import { site } from "@/lib/site";
 
-const cell = "bg-signal-500 p-6 sm:p-9";
-const link = `${cell} transition-colors hover:bg-signal-400`;
+const cell = "bg-fjell-900 p-5 sm:p-7";
+const link = `${cell} transition-colors hover:bg-fjell-800`;
+const label = "block font-semibold text-stein-400";
+const ease = [0.32, 0.72, 0, 1] as const;
+const OPEN = "inset(0px 0px 0px 0px)";
 
-/** Contact details set as the title block of a drawing: one ruled box, one fact per cell. */
+/**
+ * Contact details set as the title block of a drawing: one ruled box, one fact per cell.
+ * The e-mail cell opens into a form. The details and the form lie on top of each other in one
+ * grid cell that is always as tall as the taller of the two, so opening the form moves nothing
+ * on the page: the form is only uncovered, starting from the e-mail cell.
+ */
 export function Contact() {
+  const [writing, setWriting] = useState(false);
+  const [visit, setVisit] = useState(0);
+  // The form's clip while it is shut: the e-mail cell's own box inside the stack.
+  const [shut, setShut] = useState("inset(100% 0px 0px 50%)");
+  const stack = useRef<HTMLDivElement>(null);
+  const emailCell = useRef<HTMLButtonElement>(null);
+  const still = useReducedMotion();
+  const time = (seconds: number) => (still ? 0 : seconds);
+
+  function open() {
+    const outer = stack.current?.getBoundingClientRect();
+    const inner = emailCell.current?.getBoundingClientRect();
+    if (outer && inner) {
+      const px = (n: number) => `${Math.max(0, Math.round(n))}px`;
+      setShut(
+        `inset(${px(inner.top - outer.top)} ${px(outer.right - inner.right)} ${px(outer.bottom - inner.bottom)} ${px(inner.left - outer.left)})`,
+      );
+    }
+    setVisit((n) => n + 1);
+    setWriting(true);
+  }
+
+  // When the form closes, focus goes back to the cell that opened it, once that cell can take it again.
+  const wasWriting = useRef(false);
+  useEffect(() => {
+    if (wasWriting.current && !writing) emailCell.current?.focus({ preventScroll: true });
+    wasWriting.current = writing;
+  }, [writing]);
+
   return (
-    <section id="kontakt" className="bg-signal-500 py-24 text-fjell-950 sm:py-32">
+    <section id="kontakt" className="border-t border-fjell-800 bg-fjell-950 py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <h2 className="display max-w-4xl text-[2rem] leading-[1.02] text-balance sm:text-5xl">
+        <h2 className="display max-w-3xl text-[1.75rem] leading-[1.05] text-balance sm:text-4xl">
           Fortell hva som skal gjøres, så tar vi det derfra.
         </h2>
-        {/* The gaps between cells show the box's dark background, which draws the ruling. */}
-        <div className="mt-14 grid gap-0.5 border-2 border-fjell-950 bg-fjell-950 lg:grid-cols-3">
-          <a href={site.phoneHref} className={`${link} lg:col-span-2`}>
-            <span className="block font-semibold">Ring {site.owner}</span>
-            <span className="display mt-3 block text-[clamp(2.5rem,8vw,6rem)] leading-none whitespace-nowrap">
-              {site.phoneDisplay}
-            </span>
-          </a>
-          <div className="flex items-center justify-center bg-white p-6 lg:row-span-2">
-            <Image
-              src="/logo/logo.png"
-              alt="Logoen til Bjønnes Solutions: en bjørn med hatt over en gravemaskin og en pigghammer foran fjell"
-              width={1080}
-              height={740}
-              sizes="(min-width: 1024px) 30vw, 100vw"
-              className="h-auto w-full max-w-sm"
-            />
+        {/* The gaps between cells show the box's lighter background, which draws the ruling. */}
+        <div className="mt-10 grid max-w-3xl gap-px border border-fjell-600 bg-fjell-600">
+          <div ref={stack} className="grid bg-fjell-900">
+            <motion.div
+              inert={writing}
+              initial={false}
+              animate={{ opacity: writing ? 0 : 1 }}
+              transition={{ duration: time(0.25), delay: time(writing ? 0 : 0.3) }}
+              className="col-start-1 row-start-1 grid grid-rows-[1fr_auto] gap-px bg-fjell-600 sm:grid-cols-2"
+            >
+              <a href={site.phoneHref} className={`${link} flex flex-col justify-center sm:col-span-2`}>
+                <span className={label}>Ring {site.owner}</span>
+                <span className="display mt-2 block text-[clamp(2rem,5.5vw,3.75rem)] leading-none whitespace-nowrap text-signal-500">
+                  {site.phoneDisplay}
+                </span>
+              </a>
+              <a href={site.smsHref} className={link}>
+                <span className={label}>SMS</span>
+                <span className="mt-2 block text-xl font-bold">Send en melding</span>
+              </a>
+              <button
+                ref={emailCell}
+                type="button"
+                onClick={open}
+                aria-expanded={writing}
+                aria-controls="kontakt-skjema"
+                className={`${link} cursor-pointer text-left`}
+              >
+                <span className={label}>E-post</span>
+                <span className="mt-2 block text-xl font-bold break-all">{site.email}</span>
+              </button>
+            </motion.div>
+            <motion.div
+              id="kontakt-skjema"
+              inert={!writing}
+              initial={false}
+              animate={{ clipPath: writing ? OPEN : shut, opacity: writing ? 1 : 0 }}
+              transition={{
+                clipPath: { duration: time(0.6), ease },
+                opacity: { duration: time(writing ? 0.12 : 0.25), delay: time(writing ? 0 : 0.35) },
+              }}
+              className={`${cell} col-start-1 row-start-1`}
+            >
+              <motion.div
+                initial={false}
+                animate={{ opacity: writing ? 1 : 0, y: writing ? 0 : 12 }}
+                transition={{ duration: time(writing ? 0.45 : 0.15), delay: time(writing ? 0.18 : 0), ease }}
+                className="h-full"
+              >
+                <ContactForm key={visit} active={writing} onClose={() => setWriting(false)} />
+              </motion.div>
+            </motion.div>
           </div>
-          <a href={site.smsHref} className={link}>
-            <span className="block font-semibold">SMS</span>
-            <span className="mt-2 block text-xl font-bold">Send en melding</span>
-          </a>
-          <a href={`mailto:${site.email}`} className={link}>
-            <span className="block font-semibold">E-post</span>
-            <span className="mt-2 block text-xl font-bold break-all">{site.email}</span>
-          </a>
-          <address className={`${cell} flex flex-col gap-1 not-italic sm:flex-row sm:justify-between lg:col-span-3`}>
-            <span className="font-bold">{site.name}</span>
+          <address className={`${cell} flex flex-col gap-1 text-stein-300 not-italic sm:flex-row sm:justify-between`}>
+            <span className="font-bold text-stein-50">{site.name}</span>
             <span>
               {site.street}, {site.postalCode} {site.city}
             </span>
